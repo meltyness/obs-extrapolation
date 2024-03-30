@@ -55,17 +55,21 @@ peeky.surface = None
 
 peeky.jump_limiter = 0
 
-peeky.jump_min = 24
+peeky.jump_min = 48
 
-peeky.jump_max = 256
+peeky.jump_max = 128
 peeky.urgency = 3 * peeky.jump_max
 
 peeky.orb = cv2.ORB_create()
+peeky.orb.setMaxFeatures(60)
+# Probably FAST idk there's no docs that i watn to reead
+peeky.orb.setScoreType(1)
 
-peeky.proportional_control = 8
+
+peeky.proportional_control = 9
 peeky.push_scale = 16
 
-peeky.buffered_stylus = collections.deque([peeky.init_vec.x], maxlen=6)
+peeky.buffered_stylus = collections.deque([peeky.init_vec.x], maxlen=7)
 
 
 # cv2.namedWindow("Debug Output")
@@ -174,11 +178,14 @@ def manage_imgproc(data, w, h):
 
     # Convert to Grayscale for Feature Detect step
     gray_img = cv2.cvtColor(peeky.arr, cv2.COLOR_BGR2GRAY)
-
+    
+    gray_img = cv2.resize(gray_img, (240, 135), 
+               interpolation = cv2.INTER_LINEAR)
     # Record previous orb run
     if not peeky.kp is None:
         peeky.kp_last = peeky.kp
         peeky.des_last = peeky.des
+
 
     peeky.kp, peeky.des = peeky.orb.detectAndCompute(gray_img,None)
 
@@ -203,7 +210,7 @@ def manage_imgproc(data, w, h):
         # Iterate over the matches
         for m, n in matches:
             # Check if the distance ratio is less than a threshold (e.g., 0.75)
-            if m.distance < 0.8 * n.distance:
+            if m.distance < 0.9 * n.distance:
                 good_matches.append(m)
 
         # Initialize variables to store the offsets
@@ -231,7 +238,10 @@ def manage_imgproc(data, w, h):
         # print(f"peeky disturbance: {peeky.disturbance.x}, limiter status: {peeky.jump_limiter}")
 
         # Apply bumps
-        increment = dx * peeky.push_scale
+        if(dy < 0.05):
+            increment = dx * peeky.push_scale
+        else:
+            increment = 0
 
         # Limiter kicks in
         if abs(increment) > peeky.jump_max:
