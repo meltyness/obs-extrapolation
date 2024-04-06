@@ -20,13 +20,13 @@ Grab Python portable and install it in your root directory
 
 ## Install Deps
 Use a pip bootstrap to grab:
-`cd C:\PythonPortable`
-`$gp = wget https://bootstrap.pypa.io/get-pip.py`
-`echo $gp.Content > get-pip.py`
-`notepad.exe get-pip.py` (Save as ANSI)
-`.\python.exe get-pip.py`
-`.\python.exe -m pip install opencv-python`
-`.\python.exe -m pip install opencv-contrib-python`
+- `cd C:\PythonPortable`
+- `$gp = wget https://bootstrap.pypa.io/get-pip.py`
+- `echo $gp.Content > get-pip.py`
+- `notepad.exe get-pip.py` (Save as ANSI)
+- `.\python.exe get-pip.py`
+- `.\python.exe -m pip install opencv-python`
+- `.\python.exe -m pip install opencv-contrib-python`
 
 ## Install OBS
 Install OBS
